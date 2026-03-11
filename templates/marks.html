@@ -1,0 +1,147 @@
+
+{% load static %}
+{% block title %}students{% endblock%}
+{% block content %}
+
+<style> 
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background: #f4f4f4; }
+    input, select, textarea { margin: 5px; }
+    .btn { padding: 5px 10px; margin: 5px; cursor: pointer; }
+  </style>
+
+
+  <h1>School Management System</h1>
+
+  <!-- Add Student -->
+  <h3>Add Student</h3>
+  <input type="text" id="studentName" placeholder="Student Name">
+  <input type="text" id="studentClass" placeholder="Class">
+  <button class="btn" onclick="addStudent()">Add Student</button>
+
+  <!-- Student Table -->
+  <table id="studentTable">
+    <tr>
+      <th>Name</th>
+      <th>Class</th>
+      <th>Attendance</th>
+      <th>Marks</th>
+      <th>Notes</th>
+      <th>Report Card</th>
+    </tr>
+  </table>
+
+ <script>
+  let students = [];
+
+  // Load saved data when page loads
+  window.onload = function() {
+    const saved = localStorage.getItem("students");
+    if (saved) {
+      students = JSON.parse(saved);
+      renderTable();
+    }
+  };
+
+  function saveData() {
+    localStorage.setItem("students", JSON.stringify(students));
+  }
+
+  function addStudent() {
+    const name = document.getElementById("studentName").value;
+    const className = document.getElementById("studentClass").value;
+    if (!name || !className) return alert("Enter all details");
+
+    const student = { 
+      id: Date.now(), 
+      name, 
+      className, 
+      attendance: [], 
+      marks: [], 
+      notes: "" 
+    };
+    students.push(student);
+    saveData();
+    renderTable();
+  }
+
+  function renderTable() {
+    const table = document.getElementById("studentTable");
+    table.innerHTML = `
+      <tr>
+        <th>Name</th>
+        <th>Class</th>
+        <th>Attendance</th>
+        <th>Marks</th>
+        <th>Notes</th>
+        <th>Report Card</th>
+      </tr>
+    `;
+    students.forEach(stu => {
+      table.innerHTML += `
+        <tr>
+          <td>${stu.name}</td>
+          <td>${stu.className}</td>
+          <td>
+            <select onchange="markAttendance(${stu.id}, this.value)">
+              <option value="">Select</option>
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+            </select>
+          </td>
+          <td>
+            <input type="text" placeholder="Subject" id="sub-${stu.id}">
+            <input type="number" placeholder="Marks" id="mark-${stu.id}">
+            <button onclick="addMarks(${stu.id})">Save</button>
+          </td>
+          <td>
+            <textarea onchange="addNotes(${stu.id}, this.value)">${stu.notes}</textarea>
+          </td>
+          <td>
+            <button onclick="generateReport(${stu.id})">View</button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  function markAttendance(id, status) {
+    const student = students.find(s => s.id === id);
+    student.attendance.push({ date: new Date().toLocaleDateString(), status });
+    saveData();
+    alert(`Attendance marked: ${status}`);
+  }
+
+  function addMarks(id) {
+    const subject = document.getElementById(`sub-${id}`).value;
+    const marks = document.getElementById(`mark-${id}`).value;
+    if (!subject || !marks) return alert("Enter subject and marks");
+    const student = students.find(s => s.id === id);
+    student.marks.push({ subject, marks });
+    saveData();
+    alert("Marks saved");
+  }
+
+  function addNotes(id, note) {
+    const student = students.find(s => s.id === id);
+    student.notes = note;
+    saveData();
+  }
+
+  function generateReport(id) {
+    const student = students.find(s => s.id === id);
+    let report = `Report Card for ${student.name} (Class: ${student.className})\n\n`;
+    report += "Attendance:\n";
+    student.attendance.forEach(a => report += `${a.date}: ${a.status}\n`);
+    report += "\nMarks:\n";
+    student.marks.forEach(m => report += `${m.subject}: ${m.marks}\n`);
+    report += `\nNotes:\n${student.notes}`;
+    alert(report);
+  }
+</script>
+
+
+
+{% endblock %}
