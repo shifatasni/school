@@ -4,7 +4,8 @@
     position: absolute;
     left:700px;
     top:60px;
-     z-index: 2;
+    z-index: 2;
+    width:500px;
     
 }
 .body{
