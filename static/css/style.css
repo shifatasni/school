@@ -64,4 +64,27 @@
     }
    
 
-    
+     #uploadArea {
+    position:absolute;
+    left:-9px;
+    top:0px;
+    width: 1250px;
+    height: 560px;
+    border: 2px solid #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    margin: 20px;
+  }
+
+  #uploadArea img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #fileInput {
+    display: none;
+  }

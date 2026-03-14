@@ -8,16 +8,16 @@
   <title>{% block title %}{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <script src="{% static 'javascript/script.js' %}"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script> 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
 </head>
 
+
 <body class="body"  >
   <nav  class="navbar navbar-expand-lg bg-body-tertiary">
-  <div  class="container-fluid" >
+    <div  class="container-fluid" >
    
     <h1 onclick="changeText()"style=" font-size: 40px;"
    class="navbar-brand" id="editor" href="#" contenteditable="true">Navbar</h1>
@@ -45,48 +45,8 @@
 </nav>
 
 
-
-
-
-</body>
 {% block content %}{% endblock %}
 
+</body>
+<script src="{% static 'javascript/script.js' %}"></script>
 </html>
-
-
-<script>
-    const editor = document.getElementById("editor");
-
-    // Load saved content from localStorage
-    if (localStorage.getItem("savedContent")) {
-      editor.innerHTML = localStorage.getItem("savedContent");
-    }
-
-    editor.addEventListener("keydown", function (event) {
-      if (event.key === "Enter") {
-        event.preventDefault(); // stop Enter from adding a new line
-        const confirmSave = confirm("Do you want to save the changes?");
-        if (confirmSave) {
-          const content = editor.innerHTML;
-          localStorage.setItem("savedContent", content); // save to browser
-          alert("Changes saved!");
-        } else {
-          editor.innerHTML = localStorage.getItem("savedContent") || "This is editable text. Press Enter to save.";
-          alert("Changes discarded.");
-        }
-      }
-    });
-  
-
-        
-               
-   
-
-
-  </script>
-
-
-  <style>
-    
-  </style>
- 
