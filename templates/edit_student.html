@@ -1,0 +1,19 @@
+
+
+{% block content %}
+
+<h2>Edit Student</h2>
+
+<div class="card p-3 mt-3">
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button class="btn btn-success">Update Student</button>
+</form>
+
+</div>
+
+{% endblock %}

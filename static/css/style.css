@@ -3,13 +3,15 @@
 .container-fluid{
     position: absolute;
     left:700px;
-    top:60px;
+    top:25px;
     z-index: 2;
     width: 400px;
     
 }
 .body{
    position: absolute;
+   
+    
 }
 .navbar-brand{
     position: absolute;
@@ -46,9 +48,9 @@
       cursor: pointer;
       font-family: Arial;
       color: #777;
-      position:absolute;top:56px;
+      position:absolute;top:20px;
       left:40px;
-  border-radius: 50%;
+      border-radius: 50%;
     }
 
     #logoBox img {
@@ -85,3 +87,7 @@
   #fileInput {
     display: none;
   }
+
+#student  {
+  margin-top: 70px;
+}

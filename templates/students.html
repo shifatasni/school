@@ -1,6 +1,114 @@
-{% extends 'new.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% block title %}students{% endblock%}
 {% block content %}
+
+<section class="student container mt-4" >
+
+  <div class="d-flex justify-content-between align-items-center" id="student">
+    <h2>👨‍🎓 Students Management</h2>
+
+    <!-- ADD BUTTON -->
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+      ➕ Add Student
+    </button>
+  </div>
+
+  <!-- SEARCH -->
+  <input type="text" id="searchInput" class="form-control mt-3" placeholder="🔍 Search student...">
+
+  <!-- STUDENT TABLE -->
+  <div class="card mt-3 shadow">
+    <div class="card-body">
+
+      <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Roll No</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody id="studentTable">
+          {% for s in students %}
+          <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.school_class }}</td>
+            <td>{{ s.roll_no }}</td>
+            <td>{{ s.parent_phone }}</td>
+            
+            <td>
+ <a href="{% url 'edit_student' s.id %}" class="btn btn-warning btn-sm">
+  Edit
+</a>
+  <form action="{% url 'delete_student' s.id %}" method="POST" style="display:inline;">
+  {% csrf_token %}
+  <button type="submit"
+          class="btn btn-danger btn-sm"
+          onclick="return confirm('Delete this student?')">
+    Delete
+  </button>
+</form>
+</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ================= ADD STUDENT MODAL ================= -->
+<div class="modal fade" id="addStudentModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary text-white">
+        <h5>Add New Student</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <form method="POST" action="{% url 'students' %}">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-md-4">{{ form.name.label }} {{ form.name }}</div>
+            <div class="col-md-4">{{ form.roll_no.label }} {{ form.roll_no }}</div>
+            <div class="col-md-4">{{ form.school_class.label }} {{ form.school_class }}</div>
+
+            <div class="col-md-6 mt-2">{{ form.parent_phone.label }} {{ form.parent_phone }}</div>
+            <div class="col-md-6 mt-2">{{ form.address.label }} {{ form.address }}</div>
+          </div>
+
+          <button class="btn btn-success mt-3 w-100">Save Student</button>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ================= SEARCH SCRIPT ================= -->
+<script>
+document.getElementById("searchInput").addEventListener("keyup", function() {
+  let value = this.value.toLowerCase();
+  let rows = document.querySelectorAll("#studentTable tr");
+
+  rows.forEach(row => {
+    row.style.display = row.innerText.toLowerCase().includes(value) ? "" : "none";
+  });
+});
+</script>
 
 {% endblock %}

@@ -29,24 +29,8 @@ class Migration(migrations.Migration):
                 ('classroom', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='myapp.classroom')),
             ],
         ),
-        migrations.CreateModel(
-            name='ReportCard',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('remarks', models.TextField()),
-                ('created_on', models.DateField(auto_now_add=True)),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='myapp.student')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Exam',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('subject', models.CharField(max_length=50)),
-                ('marks', models.IntegerField()),
-                ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='myapp.student')),
-            ],
-        ),
+       
+        
         migrations.CreateModel(
             name='Attendance',
             fields=[
