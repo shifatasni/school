@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}students{% endblock%}
+{% block content %}
+
+<head>
+    <title>Attendance List</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        .present { background: #c8f7c5; }
+        .absent { background: #f7c5c5; }
+    </style>
+</head>
+<body>
+
+{% for class_name, records in grouped_records.items %}
+
+<h3 class="mt-4">Class {{ class_name }}</h3>
+
+<table class="table table-bordered">
+  <tr>
+    <th>Name</th>
+    <th>Roll No</th>
+    <th>Date</th>
+    <th>Status</th>
+  </tr>
+
+  {% for record in records %}
+  <tr class="{% if record.status == 'Present' %}table-success{% else %}table-danger{% endif %}">
+    <td>{{ record.student.name }}</td>
+    <td>{{ record.student.roll_no }}</td>
+    <td>{{ record.date }}</td>
+    <td>{{ record.status }}</td>
+  </tr>
+  {% endfor %}
+
+</table>
+
+{% endfor %}
+
+{% endblock %}

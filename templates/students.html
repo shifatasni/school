@@ -14,6 +14,19 @@
     </button>
   </div>
 
+
+
+<form method="get">
+  <select name="class" onchange="this.form.submit()">
+    <option value="">All Classes</option>
+    {% for c in classes %}
+      <option value="{{ c }}" {% if c == selected_class %}selected{% endif %}>
+        {{ c }}
+      </option>
+    {% endfor %}
+  </select>
+</form>
+  
   <!-- SEARCH -->
   <input type="text" id="searchInput" class="form-control mt-3" placeholder="🔍 Search student...">
 
