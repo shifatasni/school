@@ -1,0 +1,7 @@
+<h3>Add Special Note for {{ student.name }}</h3>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Note</button>
+</form>

@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}Student Details{% endblock %}
+{% load static %}
+{% block content %}
+<div class="student-detail">
+<div class="container mt-4">
+
+    <h2>👨‍🎓 Student Profile</h2>
+
+    <!-- ================= STUDENT INFO ================= -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            {% if student.photo %}
+        <img src="{{ student.photo.url }}" width="80" height="80" style="border-radius:50%;">
+       
+        {% else %}
+            No Image
+        {% endif %}
+        
+         <br>
+          <br>
+            <p><strong>Name:</strong> {{ student.name }}</p>
+            <p><strong>Class:</strong> {{ student.get_school_class_display }}</p>
+            <p><strong>Roll No:</strong> {{ student.roll_no }}</p>
+            <p><strong>Phone:</strong> {{ student.parent_phone }}</p>
+            <p><strong>Address:</strong> {{ student.address }}</p>
+        </div>
+    </div>
+
+
+    <!-- ================= ATTENDANCE ================= -->
+   <h4>📅 Attendance Calendar</h4>
+   <form method="get" style="text-align:center; margin-bottom:15px;">
+    
+    <select name="month" onchange="this.form.submit()">
+        {% for m in months %}
+            <option value="{{ m }}" {% if m == month %}selected{% endif %}>
+                {{ m }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <select name="year" onchange="this.form.submit()">
+        {% for y in years %}
+            <option value="{{ y }}" {% if y == year %}selected{% endif %}>
+                {{ y }}
+            </option>
+        {% endfor %}
+    </select>
+
+</form>
+
+<div class="card shadow mb-4">
+  <div class="card-body">
+<h5 style="text-align:center;">
+    {{ month_name }} {{ year }}
+</h5>
+    <table class="table table-bordered text-center">
+
+    <!-- Days Name -->
+    <tr>
+        <th>Sun</th>
+        <th>Mon</th>
+        <th>Tue</th>
+        <th>Wed</th>
+        <th>Thu</th>
+        <th>Fri</th>
+        <th>Sat</th>
+    </tr>
+
+    {% for week in calendar_weeks %}
+    <tr>
+        {% for day in week %}
+            {% if day == 0 %}
+                <td></td>
+            {% else %}
+                {% for d in calendar_days %}
+                    {% if d.day == day %}
+
+                        {% if d.status == "Present" %}
+                            <td style="background-color:lightgreen;">
+                                {{ day }}<br>P
+                            </td>
+
+                        {% elif d.status == "Absent" %}
+                            <td style="background-color:lightcoral;">
+                                {{ day }}<br>A
+                            </td>
+
+                        {% else %}
+                            <td>{{ day }}</td>
+                        {% endif %}
+
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </tr>
+    {% endfor %}
+
+</table>
+
+  </div>
+</div>
+
+    <!-- ================= MARKS ================= -->
+<h4>📘 Marks</h4>
+
+<table border="1" style="width:100%; text-align:center;">
+    
+    <tr>
+        <th>Exam</th>
+        {% for sub in subjects %}
+            <th>{{ sub }}</th>
+        {% endfor %}
+        <th>Total</th>
+        <th>Grade</th>
+    </tr>
+
+    {% for exam in exam_list %}
+    <tr>
+        <td>{{ exam.exam }}</td>
+
+        {% for mark in exam.marks %}
+            <td>{{ mark|default:"-" }}</td>
+        {% endfor %}
+
+        <td><b>{{ exam.total }}</b></td>
+        <td><b>{{ exam.grade }}</b></td>
+    </tr>
+    {% endfor %}
+
+</table>
+<br>
+
+
+
+<h4>📝 Remarks</h4>
+
+<div style="background:#f9f9f9; padding:15px; border-radius:10px;">
+
+    {% for r in remarks %}
+        <div style="margin-bottom:10px; padding:10px; background:white; border-left:5px solid #007bff;">
+            <strong>{{ r.exam_name }}</strong><br>
+            {{ r.remark }}
+        </div>
+    {% empty %}
+        <p>No remarks available</p>
+    {% endfor %}
+
+</div>
+{% endblock %}

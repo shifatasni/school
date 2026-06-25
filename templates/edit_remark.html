@@ -1,0 +1,8 @@
+<h3>Edit Remark</h3>
+
+<form method="post">
+    {% csrf_token %}
+    <textarea name="remark" class="form-control">{{ remark.remark }}</textarea>
+    <br>
+    <button type="submit">Update</button>
+</form>

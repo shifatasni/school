@@ -1,18 +1,21 @@
-
-
 {% block content %}
 
 <h2>Edit Student</h2>
 
 <div class="card p-3 mt-3">
 
-<form method="POST">
-    {% csrf_token %}
+    <!-- ✅ SHOW OLD IMAGE -->
+    {% if student.photo %}
+        <img src="{{ student.photo.url }}" width="120" style="border-radius:50%; margin-bottom:10px;">
+    {% endif %}
 
-    {{ form.as_p }}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <button class="btn btn-success">Update Student</button>
-</form>
+        {{ form.as_p }}
+
+        <button class="btn btn-success">Update Student</button>
+    </form>
 
 </div>
 

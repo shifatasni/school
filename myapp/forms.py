@@ -16,14 +16,30 @@ CLASS_CHOICES = [
 ]
 
 class StudentForm(forms.ModelForm):
-    school_class = forms.ChoiceField(choices=CLASS_CHOICES)
-
     class Meta:
         model = Student
-        fields = '__all__'
+        fields = ['name', 'roll_no', 'school_class', 'parent_phone', 'address', 'photo']
 
 
 class AttendanceForm(forms.ModelForm):
     class Meta:
         model = Attendance
         fields = ['status']
+
+
+
+from django import forms
+from .models import StudentNote
+
+class NoteForm(forms.ModelForm):
+    class Meta:
+        model = StudentNote
+        fields = ['exam_name', 'note']
+
+
+from .models import School
+
+class SchoolForm(forms.ModelForm):
+    class Meta:
+        model = School
+        fields = ['name', 'background']

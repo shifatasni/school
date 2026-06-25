@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}students{% endblock%}
+{% block content %}
+
+<div class="monthly_attendance">
+<h2>Monthly Attendance</h2>
+
+<form method="get">
+    <label>Class:</label>
+    <select name="class">
+        <option value="">All</option>
+        {% for c in classes %}
+            <option value="{{ c }}" {% if c == selected_class %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Month:</label>
+    <input type="month" name="month" value="{{ selected_month }}">
+
+    <button type="submit">Filter</button>
+</form>
+
+<br>
+
+<table border="1">
+    <tr>
+        <th>Student</th>
+        {% for d in days %}
+            <th>{{ d }}</th>
+        {% endfor %}
+    </tr>
+
+    {% for student, records in attendance_data.items %}
+    <tr>
+        <td>{{ student.name }}</td>
+
+        {% for status in records %}
+            <td>
+                {% if status == "Present" %}
+                    ✅
+                {% elif status == "Absent" %}
+                    ❌
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+</div>
+{% endblock %}

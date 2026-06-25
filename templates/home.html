@@ -1,28 +1,183 @@
+
 {% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
 {% load static %}
-{% block title %}home{% endblock%}
 {% block content %}
 
- 
 
 
-<!-- Blank space -->
-<div id="uploadArea">Click here to add image</div>
+<div class="Welcome">
+<div id="bg-section" onclick="document.getElementById('fileInput').click()">
 
-<!-- Hidden file input -->
+    <div id="overlay"></div>
+
+    <div class="welcome-text">
+        <h1>Welcome</h1>
+       
+    </div>
+
+    <!-- Scroll down icon -->
+    <div class="scroll-down">
+        <span>Scroll Down</span>
+        <div class="arrow"></div>
+    </div>
+
+</div>
+
+
 <input type="file" id="fileInput" accept="image/*">
- 
-  <!-- Clickable blank space -->
-  <div id="logoBox" >
-    <span id="text">Click to upload logo</span>
-   </div>
 
- <!-- Hidden file input -->
-  <input type="file" id="logoInput" accept="image/*">
+</div>
+<script>
+    const bgSection = document.getElementById("bg-section");
+    const fileInput = document.getElementById("fileInput");
+
+    // load saved image
+    window.onload = function () {
+        const saved = localStorage.getItem("bgImage");
+        if (saved) {
+            bgSection.style.backgroundImage = `url('${saved}')`;
+        }
+    };
+
+    // change + save image
+    fileInput.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                bgSection.style.backgroundImage = `url('${e.target.result}')`;
+                localStorage.setItem("bgImage", e.target.result);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
+
+<div class="homepage">
+<div class="container mt-4">
+
+    <!-- 🔷 HEADER -->
+    <div class="text-center mb-4">
+        <h1>🏫 School Dashboard</h1>
+        <p class="text-muted">Manage everything in one place</p>
+    </div>
+
+    <!-- 🔷 STATS -->
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+            <div class="dashboard-card bg-blue text-center">
+                <h5>Total Students</h5>
+                <h2>{{ total_students }}</h2>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="dashboard-card bg-green text-center">
+                <h5>Today's Attendance</h5>
+                <h2>{{ today_attendance }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 🔷 ACTION CARDS -->
+    <div class="row">
+
+        <div class="col-md-3 mb-3">
+    <a href="#" data-bs-toggle="modal" data-bs-target="#addStudentModal" style="text-decoration:none;">
+        <div class="dashboard-card bg-purple text-center">
+            <div class="icon">➕</div>
+            <h5>Add Student</h5>
+        </div>
+    </a>
+</div>
+
+        <div class="col-md-3 mb-3">
+            <a href="{% url 'student_list' %}" style="text-decoration:none;">
+                <div class="dashboard-card bg-blue text-center">
+                    <div class="icon">👨‍🎓</div>
+                    <h5>Students</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="{% url 'attendance' %}" style="text-decoration:none;">
+                <div class="dashboard-card bg-orange text-center">
+                    <div class="icon">📅</div>
+                    <h5>Attendance</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="{% url 'marks' %}" style="text-decoration:none;">
+                <div class="dashboard-card bg-green text-center">
+                    <div class="icon">📘</div>
+                    <h5>Marks Entry</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="{% url 'view_marks' %}" style="text-decoration:none;">
+                <div class="dashboard-card bg-darkblue text-center">
+                    <div class="icon">📊</div>
+                    <h5>View Marks</h5>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
 
 
 
+<!-- ================= ADD STUDENT MODAL ================= -->
+<div class="modal fade" id="addStudentModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary text-white">
+        <h5>Add New Student</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <form method="POST" action="{% url 'home' %}">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-md-4">{{ form.name.label }} {{ form.name }}</div>
+            <div class="col-md-4">{{ form.roll_no.label }} {{ form.roll_no }}</div>
+            <div class="col-md-4">{{ form.school_class.label }} {{ form.school_class }}</div>
+
+            <div class="col-md-6 mt-2">{{ form.parent_phone.label }} {{ form.parent_phone }}</div>
+            <div class="col-md-6 mt-2">{{ form.address.label }} {{ form.address }}</div>
+          </div>
+
+          <button class="btn btn-success mt-3 w-100">Save Student</button>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+</div>
 
 
 
 {% endblock %}
+

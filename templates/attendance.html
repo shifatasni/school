@@ -1,82 +1,86 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}students{% endblock%}
+{% block title %}Attendance{% endblock %}
 {% block content %}
-
-
-
-<head>
-    <title>Attendance</title>
-    <style>
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
-        .btn { padding: 6px 12px; background: green; color: white; border: none; }
-    </style>
-</head>
-<body>
-
+<div class="attendance-system">
 <h2>Attendance System</h2>
 
+<!-- ✅ FILTER FORM -->
 <form method="get" action="{% url 'attendance' %}">
     <label>Class:</label>
     <select name="class" class="form-control" onchange="this.form.submit()">
-    <option value="">All Classes</option> <!-- ✅ IMPORTANT -->
+        <option value="">All Classes</option>
 
-    {% for c in classes %}
-        <option value="{{ c }}" {% if c == selected_class %}selected{% endif %}>
-            {{ c }}
-        </option>
-    {% endfor %}
-</select>
+        {% for c in classes %}
+            <option value="{{ c }}" {% if c == selected_class %}selected{% endif %}>
+                {{ c }}
+            </option>
+        {% endfor %}
+    </select>
 
     <label>Date:</label>
-    <input type="date" name="date" value="{{ selected_date }}">
+    <!-- ✅ FIXED DATE FORMAT -->
+    <input type="date" name="date" value="{{ selected_date|date:'Y-m-d' }}">
 
     <button type="submit">Filter</button>
 </form>
 
+<br>
+
+<!-- ✅ ATTENDANCE SAVE FORM -->
 <form method="post" action="{% url 'attendance' %}">
     {% csrf_token %}
 
+    <!-- ✅ IMPORTANT HIDDEN VALUES -->
     <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+    <input type="hidden" name="class" value="{{ selected_class }}">
 
-    <table>
+    <table border="1" style="width:100%; border-collapse: collapse; text-align:center;">
         <tr>
-             <th style="width: 30%;">Name</th>
-    <th style="width: 15%;">Class</th>
-    <th style="width: 15%;">Roll No</th>
-    <th style="width: 20%;">Present</th>
-    <th style="width: 20%;">Absent</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Roll No</th>
+            <th>Present</th>
+            <th>Absent</th>
         </tr>
 
         {% for student in students %}
-<tr>
-    <td>
-        {{ student.name }}
-       <input type="hidden" name="student_ids" value="{{ student.id }}">
-    </td>
+        <tr>
+            <td>
+                {{ student.name }}
+                <input type="hidden" name="student_ids" value="{{ student.id }}">
+            </td>
 
-    <td>{{ student.school_class }}</td>
-    <td>{{ student.roll_no }}</td>
+            <td>{{ student.school_class }}</td>
+            <td>{{ student.roll_no }}</td>
 
-    <td>
-        <input type="radio" name="status_{{ student.id }}" value="Present">
-    </td>
+            <!-- ✅ AUTO LOAD PREVIOUS STATUS -->
+            <td>
+                <input type="radio" name="status_{{ student.id }}" value="Present"
+                {% if student.attendance_status == "Present" %}checked{% endif %}>
+            </td>
 
-    <td>
-        <input type="radio" name="status_{{ student.id }}" value="Absent">
-    </td>
-</tr>
-{% endfor %}
+            <td>
+                <input type="radio" name="status_{{ student.id }}" value="Absent"
+                {% if student.attendance_status == "Absent" %}checked{% endif %}>
+            </td>
+        </tr>
+        {% endfor %}
     </table>
 
     <br>
-    <button class="btn" type="submit">Save Attendance</button>
+    <button type="submit" style="background:green; color:white; padding:8px 15px; border:none;">
+        Save Attendance
+    </button>
 </form>
-<a href="{% url 'attendance_list' %}">
-    <button type="button" class="btn">Show Attendance List</button>
+
+<br>
+
+<!-- ✅ SHOW ATTENDANCE BUTTON (UNCHANGED) -->
+<a href="{% url 'monthly_attendance' %}">
+    <button type="button" style="background:blue; color:white; padding:8px 15px; border:none;">
+        Show Attendance
+    </button>
 </a>
-</body>
-
-
+</div>
 {% endblock %}

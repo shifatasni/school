@@ -3,6 +3,7 @@
 {% block title %}students{% endblock%}
 {% block content %}
 
+<div class="students">
 <section class="student container mt-4" >
 
   <div class="d-flex justify-content-between align-items-center" id="student">
@@ -48,7 +49,11 @@
         <tbody id="studentTable">
           {% for s in students %}
           <tr>
-            <td>{{ s.name }}</td>
+            <td>
+             <a class="studname" href="{% url 'student_detail' s.id %}">
+                {{ s.name }}
+             </a>
+            </td>
             <td>{{ s.school_class }}</td>
             <td>{{ s.roll_no }}</td>
             <td>{{ s.parent_phone }}</td>
@@ -60,8 +65,8 @@
   <form action="{% url 'delete_student' s.id %}" method="POST" style="display:inline;">
   {% csrf_token %}
   <button type="submit"
-          class="btn btn-danger btn-sm"
-          onclick="return confirm('Delete this student?')">
+          class="btn btn-danger "
+          onclick="return confirm('Delete this student?')" ">
     Delete
   </button>
 </form>
@@ -90,20 +95,26 @@
 
       <div class="modal-body">
 
-        <form method="POST" action="{% url 'students' %}">
-          {% csrf_token %}
+          <form method="POST" action="{% url 'home' %}" enctype="multipart/form-data">
+            {% csrf_token %}
 
-          <div class="row">
-            <div class="col-md-4">{{ form.name.label }} {{ form.name }}</div>
-            <div class="col-md-4">{{ form.roll_no.label }} {{ form.roll_no }}</div>
-            <div class="col-md-4">{{ form.school_class.label }} {{ form.school_class }}</div>
+            <div class="row">
+              <div class="col-md-4">{{ form.name.label }} {{ form.name }}</div>
+              <div class="col-md-4">{{ form.roll_no.label }} {{ form.roll_no }}</div>
+              <div class="col-md-4">{{ form.school_class.label }} {{ form.school_class }}</div>
 
-            <div class="col-md-6 mt-2">{{ form.parent_phone.label }} {{ form.parent_phone }}</div>
-            <div class="col-md-6 mt-2">{{ form.address.label }} {{ form.address }}</div>
-          </div>
+              <div class="col-md-6 mt-2">{{ form.parent_phone.label }} {{ form.parent_phone }}</div>
+              <div class="col-md-6 mt-2">{{ form.address.label }} {{ form.address }}</div>
 
-          <button class="btn btn-success mt-3 w-100">Save Student</button>
-        </form>
+              <!-- ✅ THIS WAS MISSING -->
+              <div class="col-md-12 mt-3">
+                  <label>Student Photo:</label>
+                  {{ form.photo }}
+              </div>
+            </div>
+
+            <button class="btn btn-success mt-3 w-100">Save Student</button>
+          </form>
 
       </div>
 
@@ -111,6 +122,7 @@
   </div>
 </div>
 
+</div>
 
 <!-- ================= SEARCH SCRIPT ================= -->
 <script>

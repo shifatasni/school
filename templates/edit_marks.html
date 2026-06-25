@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}marks{% endblock%}
+{% block content %}
+
+
+<h2>Edit Marks - {{ student.name }} ({{ exam_name }})</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <table border="1">
+        <tr>
+            <th>Subject</th>
+            <th>Marks</th>
+        </tr>
+
+        {% for sub in subjects %}
+        <tr>
+            <td>{{ sub.name }}</td>
+            <td>
+                <input type="number" name="{{ sub.name }}"
+                       value="{{ marks_dict.sub.name }}">
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <button type="submit">Update</button>
+</form>
+
+{% endblock %}
+
+
