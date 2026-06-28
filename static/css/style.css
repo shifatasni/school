@@ -401,18 +401,49 @@ button:hover {
 }
 
 .offcanvas-body .nav-link:hover{
-    color:#0d6efd;
+    color:#093d8b;
 }
 
-.nav-link {
-    margin-top: 20px;
-    color: rgb(14, 13, 13);
-    transition: 0.3s;
+.nav-link{
+    position: relative;
+    display: inline-block;
+    color: #111;
+    font-size: 17px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 8px 12px;
+    transition: color .3s ease;
 }
 
-/* Hover color */
-.nav-link:hover {
-    color: #7d6609;
+/* Underline */
+.nav-link::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background: #053378;   /* underline color */
+    transition: width .3s ease;
 }
+
+/* Hover */
+.nav-link:hover{
+    color: #0f3979;
+}
+
+.nav-link:hover::after{
+    width: 100%;
+}
+
+/* Active page */
+.nav-link.active{
+    color: #033989;
+}
+
+.nav-link.active::after{
+    width: 100%;
+}
+
 
 
