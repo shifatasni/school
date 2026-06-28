@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+   
     <link rel="preconnect" href="https://fonts.googleapis.com">
      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
@@ -18,47 +18,90 @@
 
 <body class="body">
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary" >
-  <div class="container-fluid d-flex justify-content-between align-items-center">
+<nav class="navbar navbar-expand-lg bg-white shadow-sm">
+    <div class="container-fluid">
 
-    <!-- LEFT: Logo + Title -->
-    <div class="d-flex align-items-center">
-      <!-- LEFT: Logo + Title -->
-<a class="navbar-brand d-flex align-items-center" href="#">
-    
-    <img id="logoPreview"
-         src="{% static 'images/default-logo.png' %}"
-         onerror="this.src='https://via.placeholder.com/50?text=Logo'"
-         style="height:65px; width:65px; object-fit:cover; margin-right:10px; cursor:pointer;">
+        <!-- Left -->
+        <div class="d-flex align-items-center left-side">
 
-    <input type="file" id="logoInput" accept="image/*" hidden>
+            <img id="logoPreview"
+                 src="{% static 'images/default-logo.png' %}"
+                 class="logo-img">
 
-    <span id="editor" 
-          contenteditable="true"
-           >
-        Enter Your College name
-    </span>
+            <input type="file" id="logoInput" hidden>
 
-</a>
+            <span id="editor"
+                  contenteditable="true"
+                  class="college-name">
+                Enter Your College Name
+            </span>
+
+        </div>
+
+        <!-- Right -->
+        <button class="navbar-toggler"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#mobileMenu"
+        aria-controls="mobileMenu">
+
+    <span class="navbar-toggler-icon"></span>
+</button>
+
+        <div class="collapse navbar-collapse justify-content-end"
+     id="navbarMenu">
+
+            <div class="navbar-nav">
+                <a class="nav-link" href="{% url 'home' %}">Home</a>
+                <a class="nav-link" href="{% url 'students' %}">Students</a>
+                <a class="nav-link" href="{% url 'attendance' %}">Attendance</a>
+                <a class="nav-link" href="{% url 'marks' %}">Marks</a>
+            </div>
+
+        </div>
+
     </div>
-
-    <!-- RIGHT: Menu -->
-    <div class="d-flex align-items-center" style="gap:10px;">
-      <a class="nav-link px-3" href="{% url 'home' %}">Home</a>
-      <a class="nav-link px-3" href="{% url 'students' %}">Students</a>
-      <a class="nav-link px-3" href="{% url 'attendance' %}">Attendance</a>
-      <a class="nav-link px-3" href="{% url 'marks' %}">Marks</a>
-    </div>
-
-  </div>
 </nav>
 
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu">
+
+    <div class="offcanvas-header">
+        
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas">
+        </button>
+    </div>
+
+    <div class="offcanvas-body">
+
+        <div class="navbar-nav">
+
+            <a class="nav-link" href="{% url 'home' %}">Home</a>
+
+            <a class="nav-link" href="{% url 'students' %}">Students</a>
+
+            <a class="nav-link" href="{% url 'attendance' %}">Attendance</a>
+
+            <a class="nav-link" href="{% url 'marks' %}">Marks</a>
+
+        </div>
+
+    </div>
+
+</div>
 <!-- ✅ ONLY ONE BLOCK -->
 {% block content %}{% endblock %}
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
 </body>
 
-</html>
+
 
 <script>
 const editor = document.getElementById("editor");
@@ -116,3 +159,6 @@ document.getElementById("logoPreview").onclick = function () {
 };
 
 </script>
+
+</html>
+

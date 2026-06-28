@@ -1,35 +1,9 @@
 
 
-.container-fluid{
-    position: absolute;
-    left:700px;
-    top:25px;
-    z-index: 2;
-    width: 400px;
-    
-}
-
-.navbar-brand{
-    position: absolute;
-    left:-600px;
-    top:-10px;
-    font-family: Abril Fatface, serif;
-    font-weight: 400;
-    font-style: normal;
-  
-}
 
 
 
 
-#nav-link {
-      color:rgb(35, 4, 4);
-
-}
-#nav-link:hover {
-  color:rgb(198, 189, 18)
-  
-}
 
  
  
@@ -308,9 +282,6 @@ button:hover {
 
 
 
-.Welcome{
-    margin-top: 70px;
-}
 
 
 #editor{
@@ -322,7 +293,116 @@ button:hover {
 
 
 
+/* Navbar */
+.navbar{
+    background:#fff;
+    padding:10px 20px;
+}
 
+.container-fluid{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:static;
+    width:100%;
+}
+
+.navbar-brand{
+    position:static;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0;
+    max-width:70%;
+}
+
+.logo-img{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+}
+
+.college-name{
+    font-family: "Abril Fatface", serif;
+    font-size:30px;
+    color:#173A70;
+    margin-left:10px;
+
+    /* Important */
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+/* Desktop */
+@media (min-width:992px){
+
+    .college-name{
+        font-size:30px;
+        max-width:500px;
+    }
+
+}
+
+/* Tablet */
+@media (max-width:991px){
+
+    .college-name{
+        font-size:22px;
+        max-width:250px;
+    }
+
+}
+
+@media (max-width:768px){
+
+    .navbar-brand{
+        max-width:75%;
+    }
+
+    .logo-img{
+        width:40px;
+        height:40px;
+    }
+
+    #editor{
+        font-size:18px;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        max-width:270px;
+    }
+
+    .navbar-toggler{
+        margin-left:auto;
+    }
+
+    .navbar-collapse{
+        background:white;
+        margin-top:10px;
+    }
+}
+
+
+#mobileMenu{
+    width:250px;
+}
+
+.offcanvas{
+    width:260px;
+}
+
+.offcanvas-body .nav-link{
+    font-size:18px;
+    padding:10px 0;
+   
+}
+
+.offcanvas-body .nav-link:hover{
+    color:#0d6efd;
+}
 
 .nav-link {
     margin-top: 20px;
