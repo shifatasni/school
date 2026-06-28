@@ -113,19 +113,19 @@ button:hover {
 
 
 .attendance-system{
-    margin-top: 100px;
+    margin-top: 30px;
 }
 
 .monthly_attendance{
-    margin-top: 100px;
+    margin-top: 30px;
 }
 
 .marks{
-    margin-top: 100px;
+    margin-top: 30px;
 }
 
 .view_marks{
-    margin-top: 100px;
+    margin-top: 30px;
 }
 
 
@@ -157,7 +157,7 @@ button:hover {
 
 
 .student-detail{
-    margin-top: 100px;
+    margin-top: 30px;
 }
 
 
@@ -171,7 +171,7 @@ button:hover {
 
 
 .students{
-    margin-top: 100px;
+    margin-top: 10px;
 }
 
 
@@ -211,12 +211,12 @@ button:hover {
 
     /* Beautiful heading */
     .welcome-text h1 {
-        font-size: 60px;
+        font-size: 30px;
         letter-spacing: 5px;
         margin: 0;
         font-weight: 800;
         text-transform: uppercase;
-        background: linear-gradient(90deg, #ffffff, #ffd700, #ffffff);
+        background: linear-gradient(90deg, #ffffff, #2031a3, #ffffff);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: glow 3s infinite;
