@@ -1,24 +1,5 @@
 
 
-
-
-
-
-
- 
- 
- 
-
- 
-#student  {
-  margin-top: 70px;
-  
-}
-
-
-
-
-
 table {
     width: 100%;
     border-collapse: collapse;
@@ -497,4 +478,20 @@ button:hover {
   .offcanvas-body .nav-link.active svg{ stroke:var(--brass); }
   .offcanvas-body .nav-link.active::before{ height:60%; }
 
+}
+
+
+
+.edit-student {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 15px;
+}
+
+/* Make full width on small screens */
+@media (max-width: 768px) {
+    .edit-student {
+        max-width: 100%;
+        margin: 20px 0;
+    }
 }
