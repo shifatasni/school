@@ -195,14 +195,12 @@ button:hover {
 
     /* Beautiful heading */
     .welcome-text h1 {
-        font-size: 30px;
+        font-size: 20px;
         letter-spacing: 5px;
         margin: 0;
-        font-weight: 800;
+        font-weight: 00;
         text-transform: uppercase;
-        background: linear-gradient(90deg, #ffffff, #2031a3, #ffffff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #0a1c57;
         animation: glow 3s infinite;
     }
 
