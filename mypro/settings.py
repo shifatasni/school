@@ -32,7 +32,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 ALLOWED_HOSTS = [
-    "school-management-stm.up.railway.app"
+    "*"
 ]
 
 
