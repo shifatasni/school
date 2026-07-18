@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-1w5hlr-qgel*5amg)tqxwz1v)4+97n1^(jtji00!cv-u70n3+&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [ "school-management-stm.up.railway.app"]
 
 LOGIN_URL = 'login'
 # Application definition
