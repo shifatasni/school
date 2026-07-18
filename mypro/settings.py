@@ -16,9 +16,7 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://school-management-stm.up.railway.app"
-]
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -29,7 +27,15 @@ SECRET_KEY = 'django-insecure-1w5hlr-qgel*5amg)tqxwz1v)4+97n1^(jtji00!cv-u70n3+&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ "school-management-stm.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://school-management-stm.up.railway.app",
+]
+
+ALLOWED_HOSTS = [
+    "school-management-stm.up.railway.app"
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 LOGIN_URL = 'login'
 # Application definition
