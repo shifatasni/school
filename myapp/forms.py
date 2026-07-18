@@ -3,7 +3,6 @@ from django.db import models
 
 from .models import Student
 from .models import Attendance
-
 CLASS_CHOICES = [
     ('8', 'Class 8'),
     ('9', 'Class 9'),
@@ -16,10 +15,25 @@ CLASS_CHOICES = [
 ]
 
 class StudentForm(forms.ModelForm):
+    school_class = forms.ChoiceField(
+        choices=CLASS_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+
     class Meta:
         model = Student
         fields = ['name', 'roll_no', 'school_class', 'parent_phone', 'address', 'photo']
 
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'roll_no': forms.NumberInput(attrs={'class': 'form-control'}),
+            'parent_phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3
+            }),
+            'photo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
 
 class AttendanceForm(forms.ModelForm):
     class Meta:

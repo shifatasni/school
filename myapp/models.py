@@ -26,7 +26,8 @@ class Student(models.Model):
         ('ug2', 'Degree 2nd Year'),
         ('ug3', 'Degree 3rd Year'),
     ]
-
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
     name = models.CharField(max_length=100)
     roll_no = models.IntegerField()
     
@@ -70,16 +71,25 @@ def get_teacher_class(request):
 
 
 
+class Subject(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # ✅ ADD THIS
+    name = models.CharField(max_length=50)
 
+    class Meta:
+        unique_together = ['user', 'name']  # ✅ prevent duplicates per user
+
+    def __str__(self):
+        return self.name
 
 
 
 # Each subject mark stored separately
 class Marks(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE) 
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     exam_name = models.CharField(max_length=50)
 
-    subject = models.CharField(max_length=50)
+    subject = models.ForeignKey('Subject', on_delete=models.CASCADE)
     marks = models.IntegerField(default=0)
 
     
@@ -113,12 +123,7 @@ class Marks(models.Model):
 
 
 
-class Subject(models.Model):
-    name = models.CharField(max_length=50, unique=True)
 
-    def __str__(self):
-        return self.name
-    
 
 class StudentNote(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)

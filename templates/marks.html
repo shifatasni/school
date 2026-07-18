@@ -1,86 +1,90 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}marks{% endblock%}
+
 {% block content %}
 
+<div class="marks">
+    <h2>Marks Entry</h2>
 
-
-<div  class="marks">
-<h2>Marks Entry</h2>
-
-<!-- ✅ CLASS FILTER -->
-<form method="get">
-    <label>Select Class:</label>
-    <input type="text" name="class" value="{{ selected_class }}">
-    <button type="submit">Filter</button>
-</form>
-
-<!-- ✅ ADD SUBJECT -->
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="new_subject" placeholder="Add Subject">
-    <button type="submit" name="add_subject">Add Subject</button>
-</form>
-
-<br>
-
-<!-- ✅ ENTER MARKS -->
-<form method="post">
-    {% csrf_token %}
-
-    Exam Name:
-    <input type="text" name="exam_name" required><br><br>
-
-   <table border="1">
-    <tr>
-        <th>Student</th>
-
-        {% for sub in subjects %}
-            <th>
-                <a href="{% url 'edit_subject' sub.id %}" style="text-decoration:none; color:black;">
-                    ✏️ {{ sub.name }}
-                </a>
-            </th>
+    <!-- 🔥 CLASS BUTTONS -->
+    <div class="class-buttons">
+        {% for c in classes %}
+            <a href="?class={{ c }}">
+                <button class="class-btn {% if c == selected_class %}active{% endif %}">
+                    Class {{ c }}
+                </button>
+            </a>
         {% endfor %}
+    </div>
 
-        <th>📝 Remark</th> <!-- ✅ CHANGED -->
-    </tr>
-
-    {% for s in students %}
-    <tr>
-        <td>{{ s.name }}</td>
-
-        {% for sub in subjects %}
-        <td>
-            <input type="number" name="{{ s.id }}_{{ sub.id }}" min="0" style="width:70px;">
-        </td>
-        {% endfor %}
-
-        <!-- ✅ REMARK FIELD -->
-        <td>
-            <textarea name="remark_{{ s.id }}" rows="2" style="width:150px;" placeholder="Enter remark"></textarea>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+    <!-- ✅ ADD SUBJECT -->
+    <form method="post" class="subject-form">
+        {% csrf_token %}
+        <input type="text" name="new_subject" placeholder="Add Subject">
+        <button type="submit" name="add_subject">Add Subject</button>
+    </form>
 
     <br>
-    <button type="submit" name="save_marks">Save Marks</button>
-</form>
-{% if messages %}
-    {% for message in messages %}
-        <div style="color: green;">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
-<!-- ✅ VIEW MARKS BUTTON -->
-<form method="get" action="{% url 'view_marks' %}">
-    
-    <button type="submit"  href="{% url 'view_marks' %}">View Marks</button>
-</form>
 
+    <!-- ✅ ENTER MARKS -->
+    <form method="post">
+        {% csrf_token %}
 
+        <label>Exam Name:</label>
+        <input type="text" name="exam_name" required><br><br>
+
+        <table class="marks-table">
+            <tr>
+                <th>Student</th>
+
+                {% for sub in subjects %}
+                    <th>
+                        <a href="{% url 'edit_subject' sub.id %}" class="edit-link">
+                            ✏️ {{ sub.name }}
+                        </a>
+                    </th>
+                {% endfor %}
+
+                <th>📝 Remark</th>
+            </tr>
+
+            {% for s in students %}
+            <tr>
+                <td>{{ s.name }}</td>
+
+                {% for sub in subjects %}
+                <td>
+                    <input type="number" name="{{ s.id }}_{{ sub.id }}" min="0" class="mark-input">
+                </td>
+                {% endfor %}
+
+                <td>
+                    <textarea name="remark_{{ s.id }}" rows="2" class="remark-box"
+                        placeholder="Enter remark"></textarea>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br>
+        <button type="submit" name="save_marks" class="save-btn">Save Marks</button>
+    </form>
+
+    <!-- ✅ MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="success-msg">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ✅ VIEW MARKS BUTTON -->
+    <a href="{% url 'view_marks' %}">
+        <button class="view-btn">View Marks</button>
+    </a>
 
 </div>
+
 {% endblock %}

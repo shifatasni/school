@@ -183,32 +183,10 @@ button:hover {
         background: rgba(0,0,0,0.45);
     }
 
-    /* center content */
-    .welcome-text {
-        position: absolute;
-        top: 45%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-        color: white;
-    }
+    
 
-    /* Beautiful heading */
-    .welcome-text h1 {
-        font-size: 20px;
-        letter-spacing: 5px;
-        margin: 0;
-        font-weight: 00;
-        text-transform: uppercase;
-        color: #0a1c57;
-        animation: glow 3s infinite;
-    }
-
-    .welcome-text p {
-        font-size: 18px;
-        margin-top: 10px;
-        opacity: 0.9;
-    }
+    
+    
 
     @keyframes glow {
         0% { filter: drop-shadow(0 0 5px #fff); }
@@ -495,4 +473,230 @@ button:hover {
         max-width: 100%;
         margin: 20px 0;
     }
+}
+
+
+
+
+/* ✅ Fix form overflow on all devices */
+.modal input,
+.modal select,
+.modal textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ✅ Fix textarea specifically */
+.modal textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ✅ Prevent column overflow */
+.modal .row > div {
+  overflow: hidden;
+}
+
+
+
+
+
+.monthly_attendance {
+    padding: 20px;
+}
+
+/* Class Buttons */
+.class-buttons {
+    margin-bottom: 15px;
+}
+
+.class-btn {
+    padding: 8px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background: blue;
+    color: white;
+    cursor: pointer;
+}
+
+.class-btn.active {
+    background: green;
+}
+
+.class-btn:hover {
+    opacity: 0.85;
+}
+
+/* Month Filter */
+.month-filter {
+    margin-bottom: 15px;
+}
+
+/* Table */
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.attendance-table th,
+.attendance-table td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: center;
+}
+
+.status-cell {
+    text-align: center;
+}
+
+.present {
+    color: green;
+}
+
+.absent {
+    color: red;
+}
+
+
+.attendance-system {
+    padding: 20px;
+}
+
+/* Class Buttons */
+.class-buttons {
+    margin-bottom: 15px;
+}
+
+.class-btn {
+    padding: 8px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background: blue;
+    color: white;
+    cursor: pointer;
+}
+
+.class-btn.active {
+    background: green;
+}
+
+.class-btn:hover {
+    opacity: 0.85;
+}
+
+/* Filter */
+.date-filter {
+    margin-bottom: 15px;
+}
+
+/* Table */
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.attendance-table th,
+.attendance-table td {
+    border: 1px solid #ccc;
+    padding: 6px;
+}
+
+/* Buttons */
+.save-btn {
+    background: green;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+}
+
+.monthly-btn {
+    background: blue;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+}
+
+button:hover {
+    opacity: 0.85;
+    cursor: pointer;
+}
+
+
+
+.marks {
+    padding: 20px;
+}
+
+/* Class Buttons */
+.class-buttons {
+    margin-bottom: 15px;
+}
+
+.class-btn {
+    padding: 8px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background: blue;
+    color: white;
+    cursor: pointer;
+}
+
+.class-btn.active {
+    background: green;
+}
+
+.class-btn:hover {
+    opacity: 0.85;
+}
+
+/* Table */
+.marks-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.marks-table th,
+.marks-table td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: center;
+}
+
+/* Inputs */
+.mark-input {
+    width: 70px;
+}
+
+.remark-box {
+    width: 150px;
+}
+
+/* Buttons */
+.save-btn {
+    background: green;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+}
+
+.view-btn {
+    background: blue;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+}
+
+.success-msg {
+    color: green;
+    margin-top: 10px;
+}
+
+.edit-link {
+    text-decoration: none;
+    color: black;
 }

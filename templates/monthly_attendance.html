@@ -1,53 +1,62 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}students{% endblock%}
+{% block title %}students{% endblock %}
+
 {% block content %}
 
 <div class="monthly_attendance">
-<h2>Monthly Attendance</h2>
+    <h2>Monthly Attendance</h2>
 
-<form method="get">
-    <label>Class:</label>
-    <select name="class">
-        <option value="">All</option>
+    <!-- 🔥 CLASS BUTTONS -->
+    <div class="class-buttons">
         {% for c in classes %}
-            <option value="{{ c }}" {% if c == selected_class %}selected{% endif %}>{{ c }}</option>
+            <a href="?month={{ selected_month }}&class={{ c }}">
+                <button class="class-btn {% if c == selected_class %}active{% endif %}">
+                    Class {{ c }}
+                </button>
+            </a>
         {% endfor %}
-    </select>
+    </div>
 
-    <label>Month:</label>
-    <input type="month" name="month" value="{{ selected_month }}">
+    <!-- 🔥 MONTH FILTER -->
+    <form method="get" class="month-filter">
+        <input type="hidden" name="class" value="{{ selected_class }}">
 
-    <button type="submit">Filter</button>
-</form>
+        <label>Month:</label>
+        <input type="month" name="month" value="{{ selected_month }}">
 
-<br>
+        <button type="submit">Filter</button>
+    </form>
 
-<table border="1">
-    <tr>
-        <th>Student</th>
-        {% for d in days %}
-            <th>{{ d }}</th>
+    <br>
+
+    <!-- 🔥 TABLE -->
+    <table class="attendance-table">
+        <tr>
+            <th>Student</th>
+            {% for d in days %}
+                <th>{{ d }}</th>
+            {% endfor %}
+        </tr>
+
+        {% for student, records in attendance_data.items %}
+        <tr>
+            <td>{{ student.name }}</td>
+
+            {% for status in records %}
+                <td class="status-cell">
+                    {% if status == "Present" %}
+                        <span class="present">✅</span>
+                    {% elif status == "Absent" %}
+                        <span class="absent">❌</span>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
         {% endfor %}
-    </tr>
-
-    {% for student, records in attendance_data.items %}
-    <tr>
-        <td>{{ student.name }}</td>
-
-        {% for status in records %}
-            <td>
-                {% if status == "Present" %}
-                    ✅
-                {% elif status == "Absent" %}
-                    ❌
-                {% else %}
-                    -
-                {% endif %}
-            </td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-</table>
+    </table>
 </div>
+
 {% endblock %}

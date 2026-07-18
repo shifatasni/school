@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}marks{% endblock%}
+{% load custom_filters %}
+{% block title %}marks{% endblock %}
 {% block content %}
-
 
 <h2>Edit Marks - {{ student.name }} ({{ exam_name }})</h2>
 
@@ -19,8 +19,10 @@
         <tr>
             <td>{{ sub.name }}</td>
             <td>
-                <input type="number" name="{{ sub.name }}"
-                       value="{{ marks_dict.sub.name }}">
+                <input type="number"
+                       name="{{ sub.name }}"
+                       value="{{ marks_dict|get_item:sub.name }}"
+                       min="0">
             </td>
         </tr>
         {% endfor %}
@@ -31,5 +33,3 @@
 </form>
 
 {% endblock %}
-
-

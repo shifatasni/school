@@ -1,4 +1,4 @@
-
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import date, datetime
 
@@ -11,30 +11,48 @@ from .models import Student, Attendance
 
 from datetime import date
 
+from datetime import date, datetime
+@login_required
 def home(request):
+    user = request.user  # ✅ IMPORTANT
 
-    total_students = Student.objects.count()
-    today_attendance = Attendance.objects.filter(date=date.today()).count()
+    # ✅ PRIVATE DATA
+    total_students = Student.objects.filter(user=user).count()
+    today_attendance = Attendance.objects.filter(
+        student__user=user,   # 🔥 IMPORTANT
+        date=date.today()
+    ).count()
 
     school = School.objects.first()
 
     if not school:
         school = School.objects.create(name="My School")
 
-    # ✅ HANDLE BACKGROUND CHANGE (FIXED)
+    # ✅ GET USER CLASSES
+    classes = Student.objects.filter(user=user)\
+                .values_list('school_class', flat=True).distinct()
+
+    selected_class = request.GET.get('class') or (classes[0] if classes else "")
+
+    # ✅ CURRENT MONTH
+    current_month = datetime.today().strftime("%Y-%m")
+
+    # ✅ HANDLE POST
     if request.method == "POST":
 
-        # 👉 BACKGROUND CHANGE
+        # BACKGROUND CHANGE
         bg = request.POST.get('bg')
         if bg:
             school.background = bg
             school.save()
             return redirect('home')
 
-        # 👉 STUDENT FORM
+        # STUDENT FORM
         form = StudentForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            student = form.save(commit=False)
+            student.user = user   # 🔥 IMPORTANT
+            student.save()
             return redirect('home')
 
     else:
@@ -45,6 +63,11 @@ def home(request):
         'today_attendance': today_attendance,
         'form': form,
         'school': school,
+
+        # ✅ ADD THESE
+        'current_month': current_month,
+        'selected_class': selected_class,
+        'classes': classes,
     }
 
     return render(request, 'home.html', context)
@@ -59,29 +82,50 @@ def attendance(request):
 def report(request):
     return render(request, 'report.html')
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+import uuid
+
+def auto_login(request):
+    if not request.user.is_authenticated:
+        username = str(uuid.uuid4())[:10]   # random unique user
+        user = User.objects.create_user(username=username)
+        login(request, user)
+    return request.user
+
 
 def students(request):
+    user = auto_login(request)   # 🔥 ADD THIS LINE
+
     selected_class = request.GET.get('class')
 
-    # ✅ FILTER + ORDER
+    # ✅ FILTER ONLY CURRENT USER DATA
     if selected_class:
         students = Student.objects.filter(
+            user=user,
             school_class=selected_class
         ).order_by('roll_no')
     else:
-        students = Student.objects.all().order_by('school_class', 'roll_no')
+        students = Student.objects.filter(
+            user=user
+        ).order_by('school_class', 'roll_no')
 
-    # ✅ ADD STUDENT (POST)
+    # ✅ ADD STUDENT
     if request.method == "POST":
         form = StudentForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            student = form.save(commit=False)
+            student.user = user   # 🔥 IMPORTANT CHANGE
+            student.save()
             return redirect('students')
     else:
         form = StudentForm()
 
-    # ✅ GET ALL CLASSES FOR DROPDOWN
-    classes = Student.objects.values_list('school_class', flat=True).distinct()
+    # ✅ CLASSES ONLY FOR THIS USER
+    classes = Student.objects.filter(
+        user=user
+    ).values_list('school_class', flat=True).distinct()
 
     return render(request, 'students.html', {
         'students': students,
@@ -89,16 +133,21 @@ def students(request):
         'classes': classes,
         'selected_class': selected_class
     })
-    
 
-# ✅ EDIT STUDENT
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+
+# ✅ EDIT STUDENT (SECURE)
+
 def edit_student(request, id):
-    student = get_object_or_404(Student, id=id)
+    student = get_object_or_404(Student, id=id, user=request.user)  # ✅ FIX
 
     if request.method == "POST":
-        form = StudentForm(request.POST, request.FILES, instance=student)  # ✅ FIXED
+        form = StudentForm(request.POST, request.FILES, instance=student)
         if form.is_valid():
-            form.save()
+            updated_student = form.save(commit=False)
+            updated_student.user = request.user  # ✅ keep ownership
+            updated_student.save()
             return redirect('students')
     else:
         form = StudentForm(instance=student)
@@ -109,40 +158,40 @@ def edit_student(request, id):
     })
 
 
-# ✅ DELETE (SAFE)
+# ✅ DELETE STUDENT (SECURE)
+
 def delete_student(request, id):
-    student = get_object_or_404(Student, id=id)
+    student = get_object_or_404(Student, id=id, user=request.user)  # ✅ FIX
 
     if request.method == "POST":
         student.delete()
 
     return redirect('students')
 
-
 from datetime import datetime, date
 from django.shortcuts import render, redirect
 from .models import Student, Attendance
 
 def attendance_view(request):
+    user = request.user  # ✅ IMPORTANT
 
-    # ✅ GET or POST (IMPORTANT FIX)
     selected_class = request.GET.get('class') or request.POST.get('class')
     selected_date = request.GET.get('date') or request.POST.get('date')
 
-    # ✅ Convert date
     if selected_date:
         selected_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
     else:
         selected_date = date.today()
 
-    students = Student.objects.all()
+    # ✅ FILTER BY USER
+    students = Student.objects.filter(user=user)
 
     if selected_class:
         students = students.filter(school_class=selected_class)
 
     students = students.order_by('school_class', 'roll_no')
 
-    # ✅ LOAD EXISTING ATTENDANCE (for edit)
+    # ✅ LOAD ONLY USER ATTENDANCE
     for student in students:
         record = Attendance.objects.filter(
             student=student,
@@ -167,7 +216,8 @@ def attendance_view(request):
 
         return redirect(f'/attendance/?class={selected_class}&date={selected_date}')
 
-    classes = Student.objects.values_list('school_class', flat=True).distinct()
+    # ✅ ONLY USER CLASSES
+    classes = Student.objects.filter(user=user).values_list('school_class', flat=True).distinct()
 
     return render(request, 'attendance.html', {
         'students': students,
@@ -179,18 +229,19 @@ from .models import Attendance
 
 from calendar import monthrange
 from datetime import datetime
-from .models import Attendance, Student
 
 def attendance_list(request):
+    user = request.user  # ✅ IMPORTANT
+
     selected_class = request.GET.get('class')
     selected_month = request.GET.get('month')
 
-    students = Student.objects.all()
+    # ✅ FILTER STUDENTS
+    students = Student.objects.filter(user=user)
 
     if selected_class:
         students = students.filter(school_class=selected_class)
 
-    # ✅ Default month (current)
     if not selected_month:
         today = datetime.today()
         year = today.year
@@ -199,22 +250,21 @@ def attendance_list(request):
     else:
         year, month = map(int, selected_month.split('-'))
 
-    # ✅ Get total days in month
     total_days = monthrange(year, month)[1]
     days = list(range(1, total_days + 1))
 
-    # ✅ Get attendance records
+    # ✅ FILTER ATTENDANCE BY USER STUDENTS
     records = Attendance.objects.filter(
+        student__user=user,   # 🔥 IMPORTANT
         date__year=year,
         date__month=month
     )
 
-    # ✅ Create dictionary: {(student_id, day): status}
     attendance_dict = {}
     for r in records:
         attendance_dict[(r.student_id, r.date.day)] = r.status
 
-    classes = Student.objects.values_list('school_class', flat=True).distinct()
+    classes = Student.objects.filter(user=user).values_list('school_class', flat=True).distinct()
 
     return render(request, 'attendance_list.html', {
         'students': students,
@@ -224,7 +274,6 @@ def attendance_list(request):
         'selected_class': selected_class,
         'classes': classes
     })
-
 from django.http import HttpResponse
 
 from django.shortcuts import render
@@ -232,54 +281,60 @@ from .models import Attendance, Student
 from django.db.models import Count
 import calendar
 
-def monthly_attendance(request):
-    selected_class = request.GET.get('class')
-    selected_month = request.GET.get('month')  # format: 2026-06
+from datetime import datetime
 
-    students = Student.objects.all()
+def monthly_attendance(request):
+    user = request.user
+
+    selected_class = request.GET.get('class')
+    selected_month = request.GET.get('month')
+
+    # ✅ ALWAYS DEFAULT TO CURRENT MONTH
+    if not selected_month:
+        today = datetime.today()
+        selected_month = today.strftime("%Y-%m")
+
+    year, month = map(int, selected_month.split('-'))
+
+    students = Student.objects.filter(user=user)
 
     if selected_class:
         students = students.filter(school_class=selected_class)
 
+    import calendar
+    num_days = calendar.monthrange(year, month)[1]
+    days = list(range(1, num_days + 1))
+
     attendance_data = {}
 
-    if selected_month:
-        year, month = map(int, selected_month.split('-'))
+    for student in students:
+        student_attendance = []
 
-        # get all days in month
-        num_days = calendar.monthrange(year, month)[1]
-        days = list(range(1, num_days + 1))
+        for day in days:
+            record = Attendance.objects.filter(
+                student=student,
+                date__year=year,
+                date__month=month,
+                date__day=day
+            ).first()
 
-        for student in students:
-            student_attendance = []
+            if record:
+                student_attendance.append(record.status)
+            else:
+                student_attendance.append('-')
 
-            for day in days:
-                record = Attendance.objects.filter(
-                    student=student,
-                    date__year=year,
-                    date__month=month,
-                    date__day=day
-                ).first()
+        attendance_data[student] = student_attendance
 
-                if record:
-                    student_attendance.append(record.status)
-                else:
-                    student_attendance.append('-')
-
-            attendance_data[student] = student_attendance
-    else:
-        days = []
-
-    classes = Student.objects.values_list('school_class', flat=True).distinct()
+    classes = Student.objects.filter(user=user)\
+                .values_list('school_class', flat=True).distinct()
 
     return render(request, 'monthly_attendance.html', {
         'attendance_data': attendance_data,
         'days': days,
         'classes': classes,
         'selected_class': selected_class,
-        'selected_month': selected_month,
+        'selected_month': selected_month,  # ✅ IMPORTANT
     })
-
 
 
 
@@ -315,14 +370,24 @@ from django.contrib import messages
 from .models import Student, Marks, Subject
 from django.contrib import messages
 
+from django.contrib import messages
 def marks_entry(request):
+    user = request.user
     selected_class = request.GET.get('class')
 
-    if selected_class:
-        students = Student.objects.filter(school_class=selected_class)
-    else:
-        students = Student.objects.all()
+    # ✅ GET CLASSES (🔥 THIS WAS MISSING)
+    classes = Student.objects.filter(user=user).values_list('school_class', flat=True).distinct()
 
+    # ✅ FILTER STUDENTS
+    if selected_class:
+        students = Student.objects.filter(
+            user=user,
+            school_class=selected_class
+        )
+    else:
+        students = Student.objects.filter(user=user)
+
+    # ✅ SUBJECTS
     subjects = Subject.objects.all()
 
     # ================= ADD SUBJECT =================
@@ -331,18 +396,18 @@ def marks_entry(request):
 
         if new_subject:
             Subject.objects.get_or_create(
+                user=request.user,
                 name=new_subject.strip().title()
             )
 
         return redirect('marks')
 
-    # ================= SAVE MARKS + REMARK =================
+    # ================= SAVE MARKS =================
     if request.method == "POST" and 'save_marks' in request.POST:
-        exam_name = request.POST.get('exam_name')
+        exam_name = request.POST.get('exam_name').strip().lower()
 
         for student in students:
 
-            # ✅ SAVE REMARK (ONE PER STUDENT)
             remark = request.POST.get(f"remark_{student.id}")
             if remark:
                 StudentRemark.objects.update_or_create(
@@ -351,7 +416,6 @@ def marks_entry(request):
                     defaults={'remark': remark}
                 )
 
-            # ✅ SAVE MARKS
             for subject in subjects:
                 key = f"{student.id}_{subject.id}"
                 mark = request.POST.get(key)
@@ -360,113 +424,130 @@ def marks_entry(request):
                     Marks.objects.update_or_create(
                         student=student,
                         exam_name=exam_name,
-                        subject=subject.name,
-                        defaults={
-                            'marks': int(mark)
-                        }
+                        subject=subject,
+                        defaults={'marks': int(mark),
+                                  'user': request.user},
                     )
 
         messages.success(request, "Marks & remarks saved successfully!")
         return redirect('marks')
 
-    # ================= PAGE LOAD =================
+    # ✅ SEND classes ALSO
     return render(request, 'marks.html', {
         'students': students,
         'subjects': subjects,
-        'selected_class': selected_class
+        'selected_class': selected_class,
+        'classes': classes,   # 🔥 IMPORTANT
     })
 
 
 
-from .models import Student, Marks, Subject
+from .models import Student, Marks, Subject, StudentRemark
+from django.shortcuts import render
+
 def view_marks(request):
+    user = request.user
+
     selected_class = request.GET.get('class')
-    exam_name = request.GET.get('exam', 'Mid Term')
+    exam_name = request.GET.get('exam_name')
+
+    if exam_name:
+        exam_name = exam_name.strip().lower()
+
+    students = Student.objects.filter(user=user)
 
     if selected_class:
-        students = Student.objects.filter(school_class=selected_class)
-    else:
-        students = Student.objects.all()
+        students = students.filter(school_class=selected_class)
 
-    subjects = Subject.objects.all()   # ✅ FIXED
+    subjects = Subject.objects.filter(user=user)   # ✅ FIXED
 
-    marks = Marks.objects.filter(exam_name=exam_name)
+    marks = Marks.objects.filter(
+        user=user,   # ✅ FIXED
+        exam_name=exam_name
+    )
 
     table_data = []
 
     for student in students:
-        row = {
-            'student': student,
-            'marks': [],
-            'total': 0
-        }
-
+        row_marks = []
         total = 0
 
         for subject in subjects:
             mark_obj = marks.filter(
                 student=student,
-                subject=subject   # ✅ must be object
+                subject=subject
             ).first()
 
             if mark_obj:
-                mark = mark_obj.marks
-                total += mark
+                row_marks.append(mark_obj.marks)
+                total += mark_obj.marks
             else:
-                mark = "-"
+                row_marks.append("-")
 
-            row['marks'].append(mark)
+        table_data.append({
+            'student': student,
+            'marks': row_marks,
+            'total': total,
+            'grade': Marks.calculate_grade(total)
+        })
 
-        row['total'] = total
-        row['grade'] = Marks.calculate_grade(total)
-
-        table_data.append(row)
-
-    remarks = StudentRemark.objects.filter(exam_name=exam_name)
-
-
+    remarks = StudentRemark.objects.filter(
+        student__user=user,
+        exam_name=exam_name
+    )
 
     return render(request, 'view_marks.html', {
         'subjects': subjects,
         'table_data': table_data,
         'exam_name': exam_name,
-         'remarks': remarks,
+        'remarks': remarks,
     })
+from django.shortcuts import get_object_or_404, redirect
 
 def edit_student_marks(request, student_id, exam_name):
-    student = get_object_or_404(Student, id=student_id)
+    user = request.user   # ✅ IMPORTANT
+
+    # ❌ OLD (unsafe)
+    # student = get_object_or_404(Student, id=student_id)
+
+    # ✅ NEW (safe)
+    student = get_object_or_404(Student, id=student_id, user=user)
+
     subjects = Subject.objects.all()
+    marks_qs = Marks.objects.filter(
+        student=student,
+        exam_name=exam_name
+    )
 
-    marks_qs = Marks.objects.filter(student=student, exam_name=exam_name)
-
-    # create dictionary {subject: marks}
-    marks_dict = {m.subject: m.marks for m in marks_qs}
+    marks_dict = {m.subject.name: m.marks for m in marks_qs}
 
     if request.method == "POST":
         for subject in subjects:
             mark = request.POST.get(subject.name)
 
             Marks.objects.update_or_create(
-    student=student,
-    exam_name=exam_name,
-    subject=subject,   # ✅ CORRECT
+                student=student,
+                exam_name=exam_name,
+                subject=subject,   # keep consistent
                 defaults={
-                    'marks': int(mark) if mark else 0
+                    'marks': int(mark) if mark else 0,
+                    'user': request.user 
                 }
             )
 
         return redirect('view_marks')
 
-    return render(request,  'edit_marks.html', {
+    return render(request, 'edit_marks.html', {
         'student': student,
         'subjects': subjects,
         'marks_dict': marks_dict,
         'exam_name': exam_name
     })
 
-
 def delete_student_marks(request, student_id, exam_name):
-    student = get_object_or_404(Student, id=student_id)
+    user = request.user   # ✅ IMPORTANT
+
+    student = get_object_or_404(Student, id=student_id, user=user)
 
     Marks.objects.filter(
         student=student,
@@ -474,7 +555,6 @@ def delete_student_marks(request, student_id, exam_name):
     ).delete()
 
     return redirect('view_marks')
-
 
 
 
@@ -653,7 +733,6 @@ def edit_remark(request, id):
         return redirect('view_marks')
 
     return render(request, 'edit_remark.html', {'remark': remark})
-
 
 
 

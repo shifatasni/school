@@ -11,10 +11,7 @@
 
     <div id="overlay"></div>
 
-    <div class="welcome-text">
-        <h1>Welcome</h1>
-       
-    </div>
+    
 
     <!-- Scroll down icon -->
     <div class="scroll-down">
@@ -110,7 +107,7 @@
       <!-- BODY -->
       <div class="modal-body">
 
-        <form method="POST" action="{% url 'home' %}" enctype="multipart/form-data">
+        <form method="POST" action="{% url 'students' %}" enctype="multipart/form-data">
           {% csrf_token %}
 
           <div class="row">
