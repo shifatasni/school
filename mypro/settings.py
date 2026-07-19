@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1w5hlr-qgel*5amg)tqxwz1v)4+97n1^(jtji00!cv-u70n3+&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False   # 🔥 CHANGE THIS
 
 CSRF_TRUSTED_ORIGINS = [
     "https://school-management-stm.up.railway.app"
@@ -38,9 +38,11 @@ ALLOWED_HOSTS = [
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-
-
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# 🔥 ADD THIS (IMPORTANT FIX)
+CSRF_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SAMESITE = "None"
 
 
 
