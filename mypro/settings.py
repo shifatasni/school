@@ -28,20 +28,21 @@ SECRET_KEY = 'django-insecure-1w5hlr-qgel*5amg)tqxwz1v)4+97n1^(jtji00!cv-u70n3+&
 DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://school-management-stm.up.railway.app",
+    "https://school-management-stm.up.railway.app"
 ]
 
 ALLOWED_HOSTS = [
-    "*"
+    "school-management-stm.up.railway.app"
 ]
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+
 
 LOGIN_URL = 'login'
 # Application definition
