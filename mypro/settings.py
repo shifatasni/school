@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
-import dj_database_url
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,26 +25,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1w5hlr-qgel*5amg)tqxwz1v)4+97n1^(jtji00!cv-u70n3+&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False   # 🔥 CHANGE THIS
+DEBUG = True
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://school-management-stm.up.railway.app"
-]
 
 ALLOWED_HOSTS = [
-    "school-management-stm.up.railway.app"
+    "*"
 ]
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+
+
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# 🔥 ADD THIS (IMPORTANT FIX)
-CSRF_COOKIE_SAMESITE = "None"
-SESSION_COOKIE_SAMESITE = "None"
-
-
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 LOGIN_URL = 'login'
 # Application definition
@@ -61,7 +55,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -69,7 +63,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 ROOT_URLCONF = 'mypro.urls'
 
 TEMPLATES = [
