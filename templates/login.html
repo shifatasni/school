@@ -1,17 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>Login</h2>
 
-<form method="post">
+{% load static %}
+
+
+{% block content %}
+
+<style>
+    /* FORCE background */
+body.login-body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #02467b, #0a2540);
+}
+
+/* Title */
+.login-title {
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Form */
+.login-form {
+    width: 100%;
+    max-width: 380px;
+    padding: 30px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    color: #fff;
+}
+
+/* Inputs */
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    margin-top: 5px;
+}
+
+/* Button */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    background:  linear-gradient(135deg, #13344e, #174a7d);
+    border: none;
+    cursor: pointer;
+    color:white;
+}
+
+
+</style>
+
+<body class="login-body">
+
+
+
+<form method="post" class="login-form">
+    <h2 class="login-title">Login</h2>
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Login</button>
+    <button type="submit" class="login-btn">Login</button>
 </form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const passwordInput = document.querySelector('input[type="password"]');
+
+    if (passwordInput) {
+        // Create eye icon
+        const eye = document.createElement("span");
+        eye.innerHTML = "👁️";
+        eye.style.cursor = "pointer";
+        eye.style.marginLeft = "-30px";
+
+        // Wrap input in a container
+        const wrapper = document.createElement("div");
+        wrapper.style.position = "relative";
+
+        passwordInput.parentNode.insertBefore(wrapper, passwordInput);
+        wrapper.appendChild(passwordInput);
+        wrapper.appendChild(eye);
+
+        eye.style.position = "absolute";
+        eye.style.right = "10px";
+        eye.style.top = "50%";
+        eye.style.transform = "translateY(-50%)";
+
+        // Toggle password
+        eye.addEventListener("click", function () {
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eye.innerHTML = "🙈";
+            } else {
+                passwordInput.type = "password";
+                eye.innerHTML = "👁️";
+            }
+        });
+    }
+});
+</script>
+
 </body>
-</html>
+{% endblock %}
